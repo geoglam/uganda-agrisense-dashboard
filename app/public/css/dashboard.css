@@ -1,0 +1,65 @@
+#loading{
+	position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0px;
+    right: 0;
+    background: #EFEFEF;
+    z-index: 999;
+    transition: all 1s linear;
+     opacity: 1;
+
+}
+.download-icon{
+  float: left !important;
+/* margin-right: 15px; */
+  margin-top: 23px !important;
+}
+#basemaps-wrapper {
+	position: absolute;
+	top: 10px;
+	right: 10px;
+	z-index: 400;
+	background: white;
+	/*padding: 10px;*/
+}
+#basemaps {
+	margin-bottom: 5px;
+}
+.caret{
+       top: 0px !important;
+			 color:white !important;
+}
+nav{
+	height:initial !important;
+}
+nav ul li:hover, nav ul li.active{
+	background-color: transparent;
+}
+
+.progress{
+	    width: 50%;
+    top: 50%;
+    bottom: 50%;
+    left: 0;
+    right: 0;
+    margin: auto;
+}
+
+#loading-box{
+	 position: absolute;
+    text-align: center;
+    top: 20%;
+    bottom: 50%;
+    left: 0px;
+    right: 0px;
+    margin: auto;
+    z-index: 99999;
+}
+
+#map { height: 400px; }
+@media only screen and (max-width : 992px) {
+	.navbar-fixed{
+			height: 200px
+	}
+}

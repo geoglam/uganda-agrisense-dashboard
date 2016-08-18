@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Custom Dashboard</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.1/css/materialize.min.css">
+  <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.1/js/materialize.min.js"></script>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <script src="https://code.highcharts.com/highcharts.js"></script>
+  <script src="https://code.highcharts.com/modules/exporting.js"></script>
+  <script src="http://highcharts.github.io/export-csv/export-csv.js"></script>
+  <script src="js/Client.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/leaflet/1.0.0-beta.2/leaflet.css" />
+  <link rel="stylesheet" href="https://js.arcgis.com/3.16/esri/css/esri.css">
+  <script src="/vendor/lodash/dist/lodash.js"></script>
+  <link rel="stylesheet" href="/css/dashboard.css">
+</head>
+<body>
+  <!-- Loading Splash -->
+  <div id='loading'>
+    <div id='loading-box' style='text-align: center;'>
+    <img width='20%' src='/images/dashboard-logo.png' />
+      <div class="progress">
+          <div class="indeterminate"></div>
+      </div>
+    </div>
+  </div>
+  <!-- End Loading Splash -->
+<div class="blue navbar-fixed nav-wrapper">
+  <!-- Dropdown Structure -->
+<ul id="dropdown1" class="dropdown-content">
+  <li><a target="_blank" href="/data/download/shp.zip">ShapeFile</a></li>
+  <li><a target="_blank" href="/data/download/in_season_assessment.geojson">GeoJSON</a></li>
+  <li class="divider"></li>
+  <li><a target="_blank" href="/data/download/In_Season_Monitoring.csv">CSV</a></li>
+  <li><a target="_blank" href="/data/download/In_Season_Monitoring.xls">XLS</a></li>
+</ul>
+  <nav class="blue">
+  <ul class="left blue" style="height:100%;">
+    <li style="height: 5px;"><img src='./images/dashboard-logo.png' width='40px' style="position: relative;top:10px;" /></li>
+    <li style="height: 100%;border-right: 1px dotted rgba(173, 173, 173, 0.35);"><a href="#" class="" style="font-size: 20px;padding-left: 0px;">Agrisense Dashboard </a></li>
+    <li class="s12" style="display: inline-flex;">
+      <span class="s6" style="padding-right: 20px;padding-left:10px;">Select Month: </span>
+      <div class="input-field s12" style="padding-left:8px;padding-right:8px;margin-top: 10px;">
+        <select id="month" style="">
+          <option value=2>February</option>
+          <option value=3>March</option>
+          <option selected value=4>April</option>
+        </select>
+      </div>
+    </li>
+    <li class="s12" style="display: inline-flex;">
+      <span class="s6" style="padding-right: 20px;padding-left:10px;"></span>
+      <div class="input-field s12" style="padding-left:8px;padding-right:8px;margin-top: 10px;">
+        <select id="type" style="">
+          <option selected value="District">Districts</option>
+          <option value="Region">Regions</option>
+        </select>
+      </div>
+    </li>
+    <li class="s12" style="display: inline-flex;">
+      <span class="s6" style="padding-right: 20px;padding-left:10px;"></span>
+      <div class="input-field s12" style="padding-left:8px;padding-right:8px;margin-top: 10px;">
+        <select id="districts" style="">
+          <option value="all">All</option>
+        </select>
+      </div>
+    </li>
+    <li class="s12" style="display: none">
+      <span class="s6"style="padding-right: 20px;padding-left:10px;">Survey: </span>
+      <div class="input-field" style="width: 200px;padding-left:8px;padding-right:8px;margin-top: 10px;">
+          <select id="formlist">
+            <option value="in">In Season Assessment</option>
+          </select>
+      </div>
+    </li>
+  </ul>
+
+
+  <ul class="right hide-on-med-and-down">
+    <li><a class="dropdown-button" href="#!" data-activates="dropdown1">Download<i class="material-icons left download-icon">ic_file_download</i></a></li>
+    <li><a href="/logout">Logout</a></li>
+  </ul>
+  <ul id="slide-out" class="side-nav">
+    <li><a href="/logout">Logout</a></li>
+  </ul>
+  <div>
+</div>
+
+</nav>
+</div>
+<!-- En of Nav -->
+    <div class="row" style="padding-top:20px">
+      <div class="col s12">
+      <div class="row">
+        <div class="col s12 m6">
+          <div class="card hoverable">
+            <div style="z-index:9;" id='map'></div>
+            <div id="basemaps-wrapper" class="leaflet-bar" style="width:200px">
+              <select class="browser-default" name="basemaps" id="basemaps">
+                <option value="Topographic">Topographic<options>
+                <option value="Streets">Streets</option>
+                <option value="NationalGeographic">National Geographic<options>
+                <option value="Oceans">Oceans<options>
+                <option value="Gray">Gray<options>
+                <option value="DarkGray">Dark Gray<options>
+                <option value="Imagery">Imagery<options>
+                <option value="ShadedRelief">Shaded Relief<options>
+              </select>
+            </div>
+          </div>
+          <div class="card hoverable">
+            <div id='chart0' style="float:left;width:200px;height:200px;margin-left:50px;"></div>
+            <div id='chart5' style="float:right;width:300px;height:200px;margin-right:50px;"></div>
+          </div>
+          <div class="card hoverable">
+            <div id='chart3' ></div>
+          </div>
+          <div class="card hoverable">
+            <div id='chart7'></div>
+          </div>
+          <div class="card hoverable">
+            <div id='chart9'></div>
+          </div>
+        </div>
+        <div class="col s12 m6">
+
+        </div>
+
+        <div class="col s12 m6">
+          <div class="card hoverable">
+            <div class="card-content">
+              <div id='chart1' style="height: 300px;"></div>
+            </div>
+          </div>
+
+          <div class="card hoverable">
+            <div id='chart6' style="height: 300px;"></div>
+          </div>
+
+        </div>
+        <div class="col s12 m6">
+          <div class="card-panel hoverable">
+            <div class="card-content">
+               <div id='chart2'></div>
+            </div>
+          </div>
+        </div>
+        <div class="col s12 m6">
+          <div class="card-panel hoverable">
+            <div class="card-content">
+               <div id='chart4'></div>
+            </div>
+          </div>
+          <div class="card-panel hoverable">
+            <div class="card-content">
+               <div id='chart8'></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      </div>
+
+
+    </div>
+
+     <!-- Page Layout here -->
+         <footer class="page-footer blue">
+          <div class="container">
+            <div class="row">
+              <div class="col l6 s12">
+                <div class="col s3 m3 l3">
+                  <img width="80px" src="./images/dashboard-logo.png" />
+                </div>
+                <div class="col s3 m3 l3">
+                  <img width="80px" src="./images/UMDLogo.png" />
+                </div>
+                <div class="col s3 m3 l3">
+                  <img width="80px" src="./images/SUALogo_hires.png" />
+                </div>
+                <div class="col s3 m3 l3">
+                  <img width="80px" src="./images/STARS_LOGO_L_cr.jpg" />
+                </div>
+                <p class="grey-text text-lighten-4"></p>
+              </div>
+              <div class="col l4 offset-l2 s12">
+                <ul>
+                  <li><a class="grey-text text-lighten-3" href="www.agrisense.org ">Agrisense</a></li>
+                  <li><a class="grey-text text-lighten-3" href="www.stars-project.org">STARS Project</a></li>
+                  <li><a class="grey-text text-lighten-3" href="www.geoglam-crop-monitor.org">GEOGLAM</a></li>
+                  <li><a class="grey-text text-lighten-3" href="www.geoodk.com">GeoODK</a></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div class="footer-copyright">
+            <div class="container">
+            © 2016 Copyright GeoMarvel, LLC
+            <a class="grey-text text-lighten-4 right" href="#!">More Links</a>
+            </div>
+          </div>
+        </footer>
+          <!-- Modal Trigger -->
+
+  <!-- Modal Structure -->
+<script>
+  var user = <%-JSON.stringify(user)%>
+  console.log(user);
+</script>
+<script>
+  var version = '0.0.1',
+  pathname = location.pathname.replace(/\/[^/]+$/, ''),
+  URL = pathname + (pathname.substr(-1) !== '/' ? '/' : ''),
+  dojoConfig = {
+    parseOnLoad: false,
+    isDebug: false,
+    async: true,
+    cacheBust: 'v=' + version,
+    packages: [
+      { name: 'js', location: URL + 'js' },
+    ],
+    deps: [
+      'dojo/domReady!'
+    ],
+    callback: function() { require(['js/config','js/main']);
+    }
+  };
+</script>
+<script src="https://cdn.jsdelivr.net/leaflet/1.0.0-beta.2/leaflet.js" async></script>
+<script src="https://cdn.jsdelivr.net/leaflet.esri/2.0.0-beta.8/esri-leaflet.js" async></script>
+<script src='https://api.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v1.0.1/Leaflet.fullscreen.min.js' async></script>
+<link href='https://api.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v1.0.1/leaflet.fullscreen.css' rel='stylesheet' />
+<script src="https://js.arcgis.com/3.16/" async></script>
+</body>
+</html>

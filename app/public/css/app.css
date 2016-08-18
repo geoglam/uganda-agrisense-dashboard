@@ -1,0 +1,29 @@
+html,
+body {
+    height: 100%;
+}
+html {
+    display: table;
+    margin: auto;
+}
+body {
+    display: table-cell;
+    vertical-align: middle;
+}
+
+.backgroundColor{
+  background-color: #4B827D !important
+}
+.caret{
+       top: 0px !important;
+}
+
+#loading{
+	position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0px;
+    right: 0;
+    background: #333;
+    z-index: 999;
+}
